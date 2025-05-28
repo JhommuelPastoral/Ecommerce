@@ -27,3 +27,12 @@ export const getAuthUser = async() => {
     return null
   }
 }
+
+export const onboard = async ({password}) => {
+  try {
+    const response = await axiosInstance.post('/api/auth/onboard', {password});
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}
