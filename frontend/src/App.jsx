@@ -4,7 +4,10 @@ import LoginPage from './pages/LoginPage.jsx'
 import Onboarding from './pages/Onboarding.jsx'
 import useAuthUser from './hooks/useAuthUser.js'
 import Dashboard from './pages/Dashboard.jsx'
+import SignupPage from './pages/SignupPage.jsx'
+import LandingPage from './pages/LandingPage.jsx'
 import  { Toaster } from 'react-hot-toast';
+
 
 export default function App() {
 
@@ -18,7 +21,9 @@ export default function App() {
     <div data-theme="light">
       <Toaster/>
       <Routes >
-        <Route path="/" element={!isAuthenticated ? <LoginPage /> : !isOnboarded ? <Navigate to="/onboarding" /> : <Navigate to="/dashboard" />} />
+        <Route path='/' element={!isAuthenticated ? < LandingPage/> : !isOnboarded ? <Navigate to="/onboarding" /> : <Navigate to="/dashboard" />} />
+        <Route path="/login" element={!isAuthenticated ? <LoginPage /> : !isOnboarded ? <Navigate to="/onboarding" /> : <Navigate to="/dashboard" />} />
+        <Route path = "/signup" element={!isAuthenticated ? <SignupPage /> : !isOnboarded ? <Navigate to="/onboarding" /> : <Navigate to="/dashboard" />} />
         <Route path = "/onboarding" element={isAuthenticated && !isOnboarded ? <Onboarding/> : <Navigate to="/dashboard" />} />
         <Route path = "/dashboard" element={isAuthenticated && isOnboarded ? <Dashboard/> : <Navigate to="/" />} />
         <Route path = "*" element={<Navigate to="/" />} />

@@ -1,58 +1,55 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { handleGoogleLogin, login, userLogin } from '../lib/api.js'
-import { useState } from 'react'
-import { toast } from 'react-hot-toast'
-export default function LoginPage() {
+import { User } from 'lucide-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { signUp } from '../lib/api.js';
 
-  const [form, setForm] = useState({email: '', password: ''});
-  const queryClient = useQueryClient();
+export default function SignupPage() {
 
-  const{mutate: loginData} = useMutation({
-    mutationFn: handleGoogleLogin,
-    onSuccess: (data) => {
-      googleLogin(data);
-    }
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    password: ''
   });
+  const queryClient = useQueryClient(); 
 
-  const {mutate: userLoginData} = useMutation({
-    mutationFn: userLogin,
+  const {mutate: signUpData, isPending} = useMutation({
+    mutationFn: signUp,
     onSuccess: () => {
       queryClient.invalidateQueries(['authUser']);
-      toast.success('Login successful');
+      toast.success('Signup successful');
     },
     onError: (error) => {
       toast.error(error.response.data.message);
     }
   });
 
-  const {mutate: googleLogin} = useMutation({
-    mutationFn: login,
-    onSuccess: () => {
-      queryClient.invalidateQueries(['authUser']);
-      toast.success('Login successful');
-    },
-    onError: (error) => {
-      toast.error(error.response.data.message);
-    }
-  });
-  
-  const handleGoogleLogins = async() => {
-    loginData();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    signUpData(form);
   }
+  
 
-  const handleLogin = () =>{
-    userLoginData(form);
-  }
-  
   return (
     <>
       <div className='max-w-[1200px]  mx-2.5  lg:mx-auto min-h-screen flex justify-center items-center font-Poppins '>
         <div className='flex w-full gap-4 '>
           <div className='flex flex-col items-center justify-center w-full gap-4 lg:w-1/2'>
-            <form className='w-full space-y-5 lg:w-3/4 '>
-              <h1 className='text-lg font-semibold'> Welcome back!</h1>
-              <p>Enter your Credentials to access your account</p>
+            <form className='w-full space-y-5 lg:w-3/4 ' onSubmit={(e) => handleSubmit(e)}>
+              <h1 className='text-lg font-semibold'> Get Started Now</h1>
               
+              {/* Full Name */}
+              <div className="relative w-full">
+                <User className="absolute text-gray-500 -translate-y-1/2 top-1/2 left-3" size={16} />
+                <input
+                  value={form.name}
+                  onChange={(e) => setForm({...form, name: e.target.value})}
+                  type="text"
+                  placeholder="Full Name"
+                  className="w-full py-2 pl-10 pr-4 border border-gray-300 rounded-xl "
+                />
+              </div>
+
               {/* Email */}
               <div>
                 <label className="w-full border input validator rounded-xl ">
@@ -68,7 +65,7 @@ export default function LoginPage() {
                       <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
                     </g>
                   </svg>
-                  <input type="email" placeholder="mail@site.com" required onChange={(e) => setForm({...form, email: e.target.value})} value={form.email} />
+                  <input type="email" placeholder="mail@site.com" required  onChange={(e) => setForm({...form, email: e.target.value})} value={form.email}/>
                 </label>
                 <div className="hidden validator-hint">Enter valid email address</div>
               </div>
@@ -93,7 +90,7 @@ export default function LoginPage() {
                     type="password"
                     required
                     placeholder="Password"
-                    onChange={(e)=>{setForm({...form, password: e.target.value})}}
+                    onChange={(e) => setForm({...form, password: e.target.value})}
                     value={form.password}
                   />
                 </label>
@@ -101,18 +98,15 @@ export default function LoginPage() {
 
               <div className="flex flex-col w-full gap-3">
                 <div className="grid card rounded-box place-items-center">
-                  <button type='button'  className="w-full btn btn-soft btn-primary rounded-2xl" onClick={handleLogin}>Login</button>
+                  <button className="w-full btn btn-soft btn-primary rounded-2xl" disabled={isPending}> {isPending ? <div className='flex items-center gap-2'> <span className='loading loading-spinner'> </span> Signing Up</div> : 'Sign Up'} </button>
                 </div>
-                <div className="divider">OR</div>
-                <div className="grid card rounded-box place-items-center">
-                  <button type='button' className="w-full btn btn-soft btn-primary rounded-2xl" onClick={handleGoogleLogins}>Google Sign in</button>
-                </div>
+
               </div>
 
             </form>
             <div className='flex gap-2.5'>
-              <p className='font-light'>Dont have an account?</p>
-              <a href="/signup" className='font-semibold link'>Sign up</a>
+              <p className='font-light'>Have an account?</p>
+              <a href="/login" className='font-semibold link'>Sign In</a>
             </div>
           </div>
 

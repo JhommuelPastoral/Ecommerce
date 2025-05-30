@@ -15,7 +15,8 @@ export const login = async (data) => {
     const response = await axiosInstance.post('/api/auth/googleLogin', data);
     return response.data
   } catch (error) {
-    console.log("Login error", error);
+    console.log(error);
+    throw error
   }
 }
 
@@ -31,6 +32,24 @@ export const getAuthUser = async() => {
 export const onboard = async ({password}) => {
   try {
     const response = await axiosInstance.post('/api/auth/onboard', {password});
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const signUp = async ({name, email, password}) => {
+  try {
+    const response = await axiosInstance.post('/api/auth/signup', {name, email, password});
+    return response.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const userLogin = async ({email, password}) => {
+  try {
+    const response = await axiosInstance.post('/api/auth/userLogin', {email, password});
     return response.data
   } catch (error) {
     throw error
