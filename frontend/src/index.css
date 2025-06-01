@@ -8,3 +8,7 @@
 @theme{
   --font-Poppins: Poppins;
 }
+
+.hide-Scrollbar::-webkit-scrollbar {
+  display: none;
+}
