@@ -1,14 +1,18 @@
-import { ShoppingBag, Search,Smartphone, Store, Ticket,PhilippinePeso   } from 'lucide-react';
+import { ShoppingBag, Search,Smartphone, Store, Ticket} from 'lucide-react';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { useState, useEffect, useRef } from 'react';
 import FlashSale from '../components/FlashSale';
 import Categories from '../components/Categories';
-
+import JustForYou from '../components/JustForYou';
+import { logout } from '../lib/api.js';
 export default function Dashboard() {
 
   const [carousel, setCarousel] = useState(0);
   const [ishovered, setIsHovered] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const intervalRef = useRef(null);
+  const queryClient = useQueryClient();
+
   const images = [
     '1.avif',
     '2.avif',
@@ -24,7 +28,16 @@ export default function Dashboard() {
     {icon: <Ticket/>, title: 'Vouchers', description: 'Collect vouchers and redeem!'},
   ]
 
-
+  const{mutate: logOutMutatation} = useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['authUser']);
+      toast.success('Logout successful');
+    },
+    onError: (error) => {
+      toast.error(error.response.data.message);
+    }
+  });
 
 
   useEffect(()=>{
@@ -44,7 +57,7 @@ export default function Dashboard() {
         <div className="flex items-center justify-between max-w-6xl gap-4 mx-auto h-15 ">
           {/* Left side */}
           <div className="">
-            <img src="logo.png" className="w-24 h-auto" />
+            <img src="logo.png" className="w-24 h-auto" alt='logo'/>
           </div>
           {/* Search */}
           <div className="flex items-center gap-2.5 max-w-3xl  w-full ">
@@ -63,10 +76,17 @@ export default function Dashboard() {
               </svg>
               <input type="search" className="grow" placeholder="Search" />
             </label>
-            <button className="btn btn-primary"> <Search size={18}/> </button>
+            <button className="btn btn-primary" arial-label="Search" > <Search size={18}/> </button>
           </div>
-          <div>
+          <div className='flex items-center gap-3'>
             <ShoppingBag className="w-6 h-6" />
+            <div className="dropdown dropdown-bottom dropdown-end">
+              <div tabIndex={0} role="button" className="w-10 h-10 m-1 rounded-full btn">JP</div>
+              <ul tabIndex={0} className="p-2 shadow-sm dropdown-content menu bg-base-100 rounded-box z-1 w-52">
+                <li> <a href='/profile'> Profile </a></li>
+                <li> <button onClick={() => logOutMutatation()}>Logout</button> </li>
+              </ul>
+            </div>
           </div>
         </div>
       </header>
@@ -86,12 +106,13 @@ export default function Dashboard() {
             </div>
             {/* Radio Buttons */}
             <div className='absolute bottom-2 translate-x-1/2 right-1/2 space-x-2.5'>
-              {images.map((image, index) => (
+              {images.map((_, index) => (
                 <input 
                   key={index}
                   type="radio" 
                   name="radio-2" 
                   className="radio radio-xs" 
+                  aria-label={`Slide ${index + 1}`}
                   onChange={() => setCarousel(index)}
                   checked={index === carousel}
                 />
@@ -126,8 +147,10 @@ export default function Dashboard() {
         <div className='max-w-6xl p-4 mx-auto bg-base-100 rounded-2xl'>
           <Categories />
         </div>
-
-        
+        {/* Just For You */}
+        <div className='max-w-6xl p-4 mx-auto bg-base-100 rounded-2xl'>
+          <JustForYou />
+        </div>
       </main>
     
     

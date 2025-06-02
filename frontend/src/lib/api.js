@@ -6,7 +6,7 @@ export const handleGoogleLogin = async() => {
     const user = result.user;
     return user;
   } catch (error) {
-    // console.log(error);
+    throw error
   }
 }
 
@@ -53,5 +53,14 @@ export const userLogin = async ({email, password}) => {
     return response.data
   } catch (error) {
     throw error
+  }
+}
+
+export const logout = async () => {
+  try {
+    const response = await axiosInstance.post('/api/auth/logout');
+    return response.data
+  } catch (error) {
+    return null
   }
 }

@@ -159,7 +159,7 @@ export const onboard = async (req,res)=>{
 }
 
 
-export const logOut = ()=>{
+export const logOut = (req,res) =>{
   res.clearCookie("token",{
     httpOnly: true,
     sameSite: 'none',
